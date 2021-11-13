@@ -8,17 +8,24 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import webbrowser
+
 chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
 
+# ------------ Engine Creator --------------------
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voices', voices[0].id)
-engine.setProperty("rate", 150)
+# print(voices) #voice properties
+engine.setProperty('voice', voices[2].id)
+engine.setProperty("rate", 145)
+
+
+# ---------- System Functions ----------------------
 
 # all the speak commands
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+
 
 # code of wishing
 def wishMe():
@@ -29,20 +36,39 @@ def wishMe():
         speak("Good afternoon,sir")
     else:
         speak("Good evening,sir")
+
+    strTime = datetime.datetime.now().strftime("%I:%m %p")
+    speak("currently its " + strTime)
+    speak("i am edith, online and ready")
     speak("How can i help you?")
+
+
+# code for initiate sequence
+def initiate():
+    speak("initiating sequence...")
+    speak("Starting all system applications,")
+    speak("installing and checking all drivers,")
+    speak("calibrating and examining all the core processors,")
+    speak("Checking internet connection,")
+    speak("wait a movement sir,")
+    speak("     ")
+    speak("     ")
+    speak("all drivers are up and running, System initiated successfully!,")
+    speak("now i am online")
+
 
 # code to feed commands
 def takeCommand():
     r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
-        r.pause_threshold = 1
-        audio = r.listen(source)
+    #    with sr.Microphone() as source:
+    #        print("Listening...")
+    #        r.pause_threshold = 1
+    #        audio = r.listen(source)
 
     try:
         print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
-        #query = "how did you lost your job"      # testing purpose only
+        # query = r.recognize_google(audio, language='en-in')
+        query = "open instagram"   # testing purpose only
         print(f"user said: {query}\n")
 
     except Exception as e:
@@ -52,82 +78,185 @@ def takeCommand():
 
     return query
 
-# code for different tasks
+
+# ---------------task-Functions--------------------------
+
+def wiki():
+    query = takeCommand().lower()
+    speak('Searching Wikipedia...')
+    query = query.replace("wiki", "")
+    results = wikipedia.summary(query, sentences=2)
+    speak("according to wikipedia")
+    speak(results)
+
+
+def whois():
+    query = takeCommand().lower()
+    speak('Searching Wikipedia...')
+    query = query.replace("who is", "")
+    results = wikipedia.summary(query, sentences=2)
+    speak("according to wikipedia")
+    speak(results)
+
+
+def playonyt():
+    query = takeCommand().lower()
+    query = query.replace("play", "")
+    speak("playing " + query + " on youtube music")
+    pywhatkit.playonyt(query)
+
+
+def time():
+    query = takeCommand().lower()
+    strTime = datetime.datetime.now().strftime("%I:%m %p")
+    speak("sir, currently its " + strTime + ", have a good day!")
+
+
+def easter01():
+    speak("I am edith, designed to work under guidence of jarvis")
+    speak("I am not as superior as of jarvis but can help you with daily tasks")
+    speak(
+        "My main task was to manage and handle all security and defense systems, but currently i am out of my job, that's why i am working as care taker, haha")
+
+
+def easter02():
+    speak(
+        "on 2nd July 2019, i was asked to serve and help peter parker for rest of my life, but, my hardware got stolen,")
+    speak("it was allied that i was the reason behind the deaths of few hundreds of people, which is false,")
+    speak("currently, the case is in investigation and result might be out on 17th December 2021, fingers are crossed!")
+
+
+def location():
+    speak("let me check sir,")
+    speak("  ,  ,  ,  ,  ,  ,  ,")
+    speak("currently there's some issue in finding your exact location,")
+    speak("but for reference, we are currently in Narhe area of Pune,Maharashtra")
+
+
+def temperature():
+    search = "temperature in pune"
+    url = f"https://www.google.com/search?q={search}"
+    r = requests.get(url)
+    data = BeautifulSoup(r.text, "html.parser")
+    temp = data.find("div", class_="BNeawe").text
+    speak(f"currently {search} is {temp} celcius")
+
+
+def write():
+    query = takeCommand().lower()
+    rememberMsg = query.replace("remember that", "")
+    rememberMsg = rememberMsg.replace("edith", "")
+    speak("you told me to remember that " + rememberMsg)
+    speak("message remembered successfully")
+    remember = open('remainders.txt', 'w')
+    remember.write(rememberMsg)
+    remember.close()
+
+
+def read():
+    remember = open('remainders.txt', 'r')
+    speak("you told me that " + str(remember))
+
+
+def searcher():
+    query = takeCommand().lower()
+    query = query.replace("search", "")
+    query = query.replace("open", "")
+    query = query.replace("%20", "")
+    speak(f"opening {query}")
+    webbrowser.get(chrome_path).open("https://www."+query+".com/")
+
+
+# -------------------code for different tasks---------------------------
+
+
 def taskExecution():
-    wishMe()
-    while True:
-    #if 1: # testing purpose
+    # while True:
+    if 1:  # testing purpose
         query = takeCommand().lower()
         # logic for executing the tasks on the bases on query
 
         if 'wiki' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("wiki", "")
-            results = wikipedia.summary(query, sentences=2)
-            speak("according to wikipedia")
-            speak(results)
+            wiki()
 
         elif 'who is' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("who is", "")
-            results = wikipedia.summary(query, sentences=2)
-            speak("according to wikipedia")
-            speak(results)
+            whois()
 
-        elif 'open youtube' in query:
+        elif 'start youtube' in query:
             webbrowser.get(chrome_path).open("https://youtube.com/")
 
-        elif 'open google' in query:
+        elif 'start google' in query:
             webbrowser.get(chrome_path).open("https://google.com/")
 
-        elif 'open discord' in query:
+        elif 'start discord' in query:
             webbrowser.get(chrome_path).open("https://discord.com/")
 
-        elif 'open moodle' in query:
+        elif 'start moodle' in query:
             webbrowser.get(chrome_path).open("https://lmspoly.tssm.edu.in/")
 
+        elif 'open' in query:
+            searcher()
+
         elif 'play' in query:
-            query = query.replace("play", "")
-            speak("playing "+query+" on youtube music")
-            pywhatkit.playonyt(query)
+            playonyt()
 
         elif 'time' in query:
-            strTime = datetime.datetime.now().strftime("%I:%m %p")
-            speak("sir, currently its " +strTime+ ", have a good day!")
+            time()
 
         elif 'who are you' in query:
-            speak("I am edith, designed to work under guidence of jarvis")
-            speak("I am not as superior as of jarvis but can help you with daily tasks")
-            speak("My main task was to manage and handle all security and defense systems, but currently i am out of my job, that's why i am working as care taker, haha")
+            easter01()
 
         elif 'job' in query:
-            speak("on 2nd July 2019, i was asked to serve and help peter parker for rest of my life, but, my hardware got stolen,")
-            speak("it was allied that i was the reason behind the deaths of few hundreds of people, which is false,")
-            speak("currently, the case is in investigation and result might be out on 17th December 2021, fingers are crossed!")
+            easter02()
 
-        elif 'open code' in query:
-            codePath = "C:\\Users\\Atul\\Desktop\\test.txt"
-            os.startfile(codePath)
+        elif 'location' in query:
+            location()
+
+        elif 'open notepad' in query:
+            codepath = "C:\\Users\\Atul\\Desktop\\test.txt"
+            os.startfile(codepath)
+
+        elif 'remember that' in query:
+            write()
+
+        elif 'what do you remember' in query:
+            read()
 
         elif 'temperature' in query:
-            search = "temperature in pune"
-            url = f"https://www.google.com/search?q={search}"
-            r = requests.get(url)
-            data = BeautifulSoup(r.text,"html.parser")
-            temp = data.find("div", class_="BNeawe").text
-            speak(f"currently {search} is {temp}")
+            temperature()
 
         elif 'thanks' in query:
             speak('you are welcome sir, always at your command')
+        # break
 
-        break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # main loop / starter command
-while True:
-    permission = takeCommand()
-    #permission = 'hey edith'        #testing purpose
+
+# while True:
+if 1:
+    # permission = takeCommand()
+    permission = 'hey edith'  # testing purpose
     if 'hey edith' in permission or 'edith' in permission:
+        # initiate()
+        wishMe()
         taskExecution()
     elif 'terminate' in permission:
         speak('Alright sir, doing a final checkup and teminating the system.')
+        speak("goodbye sir, call me by my name and i will be at your command")
         sys.exit()
