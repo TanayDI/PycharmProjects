@@ -68,7 +68,7 @@ def takeCommand():
     try:
         print("Recognizing...")
         # query = r.recognize_google(audio, language='en-in')
-        query = "open instagram"   # testing purpose only
+        query = "who is elon musk"  # testing purpose only
         print(f"user said: {query}\n")
 
     except Exception as e:
@@ -154,8 +154,9 @@ def write():
 
 
 def read():
-    remember = open('remainders.txt', 'r')
-    speak("you told me that " + str(remember))
+    with open('remainders.txt') as text:
+        remember = text.read()
+    speak("you told me that " + remember)
 
 
 def searcher():
@@ -164,7 +165,24 @@ def searcher():
     query = query.replace("open", "")
     query = query.replace("%20", "")
     speak(f"opening {query}")
-    webbrowser.get(chrome_path).open("https://www."+query+".com/")
+    web2 = 'https://www.' + query + '.com/'
+    webbrowser.get(chrome_path).open(web2)
+
+
+def youtubeSearch():
+    query = takeCommand().lower()
+    query = query.replace("youtube search", "")
+    query = query.replace("edith", "")
+    webbrowser.get(chrome_path).open("https://www.youtube.com/results?search_query=" + query)
+    speak("this is what i found on the web")
+
+
+def googleSearch():
+    query = takeCommand().lower()
+    query = query.replace("google search", "")
+    query = query.replace("edith", "")
+    pywhatkit.search(query)
+    speak("this is what i found on the web")
 
 
 # -------------------code for different tasks---------------------------
@@ -197,6 +215,12 @@ def taskExecution():
         elif 'open' in query:
             searcher()
 
+        elif 'youtube search' in query:
+            youtubeSearch()
+
+        elif 'google search' in query:
+            googleSearch()
+
         elif 'play' in query:
             playonyt()
 
@@ -228,22 +252,6 @@ def taskExecution():
         elif 'thanks' in query:
             speak('you are welcome sir, always at your command')
         # break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # main loop / starter command
