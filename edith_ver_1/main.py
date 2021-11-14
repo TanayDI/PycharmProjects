@@ -26,8 +26,8 @@ def take_command():
             command = listener.recognize_google(voice)
             command = command.lower()
             # command = 'edith who is facebook'
-            if 'edith' in command:
-                command = command.replace('edith', '')
+            if 'friday' in command:
+                command = command.replace('friday', '')
 
     except:
         pass
@@ -59,4 +59,5 @@ def run_edith():
 
 
 while True:
+
     run_edith()

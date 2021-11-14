@@ -9,10 +9,10 @@ import requests
 from bs4 import BeautifulSoup
 import webbrowser
 
-chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+chrome_path = 'C:\Program Files\Google\Chrome\Application/chrome.exe %s'
 
 # ------------ Engine Creator --------------------
-engine = pyttsx3.init('sapi5')
+engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 # print(voices) #voice properties
 engine.setProperty('voice', voices[2].id)
@@ -51,8 +51,6 @@ def initiate():
     speak("calibrating and examining all the core processors,")
     speak("Checking internet connection,")
     speak("wait a movement sir,")
-    speak("     ")
-    speak("     ")
     speak("all drivers are up and running, System initiated successfully!,")
     speak("now i am online")
 
@@ -60,15 +58,15 @@ def initiate():
 # code to feed commands
 def takeCommand():
     r = sr.Recognizer()
-    #    with sr.Microphone() as source:
-    #        print("Listening...")
-    #        r.pause_threshold = 1
-    #        audio = r.listen(source)
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
+        audio = r.listen(source)
 
     try:
         print("Recognizing...")
-        # query = r.recognize_google(audio, language='en-in')
-        query = "who is elon musk"  # testing purpose only
+        query = r.recognize_google(audio, language='en-in')
+        #query = "whats the time"  # testing purpose only
         print(f"user said: {query}\n")
 
     except Exception as e:
@@ -77,7 +75,6 @@ def takeCommand():
         return "none"
 
     return query
-
 
 # ---------------task-Functions--------------------------
 
@@ -172,7 +169,7 @@ def searcher():
 def youtubeSearch():
     query = takeCommand().lower()
     query = query.replace("youtube search", "")
-    query = query.replace("edith", "")
+    query = query.replace("friday", "")
     webbrowser.get(chrome_path).open("https://www.youtube.com/results?search_query=" + query)
     speak("this is what i found on the web")
 
@@ -189,8 +186,8 @@ def googleSearch():
 
 
 def taskExecution():
-    # while True:
-    if 1:  # testing purpose
+    while True:
+    #if 1:  # testing purpose
         query = takeCommand().lower()
         # logic for executing the tasks on the bases on query
 
@@ -251,20 +248,19 @@ def taskExecution():
 
         elif 'thanks' in query:
             speak('you are welcome sir, always at your command')
-        # break
+        break
 
 
 # main loop / starter command
-
-# while True:
-if 1:
-    # permission = takeCommand()
-    permission = 'hey edith'  # testing purpose
-    if 'hey edith' in permission or 'edith' in permission:
-        # initiate()
-        wishMe()
+while True:
+#if 1:
+    permission = takeCommand().lower()
+    #permission = 'friday'  # testing purpose
+    if 'hey friday' in permission or 'friday' in permission:
+        #initiate()
+        #wishMe()
         taskExecution()
     elif 'terminate' in permission:
-        speak('Alright sir, doing a final checkup and teminating the system.')
+        speak('Alright, doing a final checkup and teminating the system.')
         speak("goodbye sir, call me by my name and i will be at your command")
         sys.exit()
